@@ -1,6 +1,30 @@
 import 'package:flutter/material.dart';
 
-class BibleStudyPage extends StatelessWidget {
+class BibleStudyPage extends StatefulWidget {
+  @override
+  _BibleStudyPageState createState() => _BibleStudyPageState();
+}
+
+class _BibleStudyPageState extends State<BibleStudyPage> {
+  final TextEditingController _noteController = TextEditingController();
+  String savedNote = '';
+
+  void saveNote() {
+    setState(() {
+      savedNote = _noteController.text;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Note saved!')),
+    );
+    _noteController.clear();
+  }
+
+  @override
+  void dispose() {
+    _noteController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,24 +37,38 @@ class BibleStudyPage extends StatelessWidget {
         child: ListView(
           children: [
             Text(
-              'Today\'s Study:',
+              '📖 John 1:1-5',
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 12),
             Text(
-              '📖 *John 1:1-5*\n\n'
-              'In the beginning was the Word, and the Word was with God, and the Word was God...\n\n'
-              'Reflect on the eternal nature of Jesus and how the Word brings light to all mankind.',
+              'In the beginning was the Word, and the Word was with God, and the Word was God...',
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(height: 24),
-            ElevatedButton.icon(
-              icon: Icon(Icons.note),
-              label: Text('Add Notes'),
-              onPressed: () {
-                // TODO: Add note input feature
-              },
+            TextField(
+              controller: _noteController,
+              maxLines: 5,
+              decoration: InputDecoration(
+                hintText: 'Write your reflection...',
+                border: OutlineInputBorder(),
+              ),
             ),
+            SizedBox(height: 12),
+            ElevatedButton.icon(
+              icon: Icon(Icons.save),
+              label: Text('Save Note'),
+              onPressed: saveNote,
+            ),
+            if (savedNote.isNotEmpty) ...[
+              SizedBox(height: 24),
+              Text(
+                '📓 Your Saved Note:',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              SizedBox(height: 8),
+              Text(savedNote),
+            ],
           ],
         ),
       ),
