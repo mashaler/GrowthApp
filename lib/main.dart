@@ -1,38 +1,60 @@
 import 'package:flutter/material.dart';
 import 'screens/devotionals_page.dart';
 import 'screens/journal_page.dart';
+import 'screens/bible_study_page.dart';
+
 
 void main() {
   runApp(ChosenOneApp());
 }
 
-class ChosenOneApp extends StatelessWidget {
+class ChosenOneApp extends StatefulWidget {
+  @override
+  State<ChosenOneApp> createState() => _ChosenOneAppState();
+}
+
+class _ChosenOneAppState extends State<ChosenOneApp> {
+  bool isDark = false;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'ChosenOne',
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-        scaffoldBackgroundColor: Colors.white,
-      ),
+      theme: isDark
+      ? ThemeData.dark()
+      : ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
-      routes: {
-        '/': (context) => HomePage(),
-        '/devotionals': (context) => DevotionalsPage(),
-        '/journal': (context) => JournalPage(),
-      },
+      home: HomePage(
+        toggleTheme: () {
+          setState(() {
+            isDark = !isDark;
+          });
+        },
+      ),
     );
   }
 }
 
 class HomePage extends StatelessWidget {
+  final VoidCallback toggleTheme;
+
+  const HomePage({required this.toggleTheme});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('ChosenOne'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.brightness_6),
+            onPressed: toggleTheme,
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -48,16 +70,18 @@ class HomePage extends StatelessWidget {
               icon: Icon(Icons.sunny),
               label: Text('Daily Devotionals'),
               onPressed: () {
-                Navigator.pushNamed(context, '/devotionals');
+                Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => DevotionalsPage()));
               },
               style: ElevatedButton.styleFrom(minimumSize: Size.fromHeight(50)),
             ),
-            SizedBox(height: 16),
+             SizedBox(height: 16),
             ElevatedButton.icon(
               icon: Icon(Icons.book),
               label: Text('Bible Study'),
               onPressed: () {
-                // You can later add this route too
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => BibleStudyPage()));
               },
               style: ElevatedButton.styleFrom(minimumSize: Size.fromHeight(50)),
             ),
@@ -66,7 +90,8 @@ class HomePage extends StatelessWidget {
               icon: Icon(Icons.edit_note),
               label: Text('My Journal'),
               onPressed: () {
-                Navigator.pushNamed(context, '/journal');
+                Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => JournalPage()));
               },
               style: ElevatedButton.styleFrom(minimumSize: Size.fromHeight(50)),
             ),
